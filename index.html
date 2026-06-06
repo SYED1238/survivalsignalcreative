@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REMNANT — Signal Detected</title>
+  <meta name="description" content="The world didn't end. It was waiting for you to find it. A signal has been detected. Will you answer?" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◈</text></svg>" />
+</head>
+<body>
+
+  <!-- ═══ ATMOSPHERE LAYERS ═══ -->
+  <div id="grain-overlay"></div>
+  <div id="scanline-overlay"></div>
+  <div id="vignette-overlay"></div>
+  <div class="letterbox-top"></div>
+  <div class="letterbox-bottom"></div>
+  <canvas id="rain-canvas"></canvas>
+  <canvas id="particle-canvas"></canvas>
+  <div class="fog-layer fog-layer--1"></div>
+  <div class="fog-layer fog-layer--2"></div>
+
+  <!-- Signal pulse indicator (persistent) -->
+  <div class="signal-pulse">
+    <div class="signal-dot"></div>
+    <span>Signal Active</span>
+  </div>
+
+  <!-- Signal strength bar (persistent) -->
+  <div class="signal-bar">
+    SIGNAL <span class="signal-bar__fill"></span><span class="signal-bar__empty">░░░░░░░░░░</span> 0%
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       MOMENT 1: THE PROLOGUE
+       "Before the Silence"
+       ═══════════════════════════════════════════ -->
+  <div id="moment-prologue" class="moment">
+
+    <!-- Terminal boot sequence -->
+    <div class="prologue__terminal" id="prologue-terminal">
+      <div class="prologue__date" id="prologue-date"></div>
+      <div id="prologue-lines"></div>
+    </div>
+
+    <!-- Hero reveal (hidden initially) -->
+    <div class="prologue__hero" id="prologue-hero">
+      <div class="prologue__hero-bg"></div>
+      <h1 class="prologue__title">REMNANT</h1>
+      <p class="prologue__subtitle">The last signal from a forgotten world</p>
+      <div class="prologue__scroll-hint">↓ Enter the world ↓</div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       MOMENT 2: THE SIGNAL
+       "You're not alone"
+       ═══════════════════════════════════════════ -->
+  <div id="moment-signal" class="moment">
+    <div class="signal__parallax-container" id="signal-parallax">
+
+      <!-- Layer 1: Sky gradient -->
+      <div class="signal__layer signal__layer--sky" data-depth="0.1"></div>
+
+      <!-- Layer 2: Panorama -->
+      <div class="signal__layer signal__layer--mountains" data-depth="0.3" id="signal-mountains"></div>
+
+      <!-- Layer 3: Mid fog -->
+      <div class="signal__layer signal__layer--fog-mid" data-depth="0.5"></div>
+
+      <!-- Layer 4: Foreground -->
+      <div class="signal__layer signal__layer--foreground" data-depth="0.8"></div>
+
+      <!-- Distant signal pulse -->
+      <div class="signal__distant-pulse" id="signal-distant-pulse"></div>
+
+      <!-- HUD overlay -->
+      <div class="signal__hud" id="signal-hud">
+        <div class="signal__hud-top">
+          <div class="signal__hud-data">
+            FREQ: <span>7.83 Hz</span><br>
+            ORIGIN: <span>847km NNW</span><br>
+            STATUS: <span id="signal-status-text">RESOLVING</span>
+          </div>
+          <div class="signal__hud-data" style="text-align: right;">
+            DAY <span>2,847</span><br>
+            TEMP: <span>12°C</span><br>
+            WIND: <span>NW 23km/h</span>
+          </div>
+        </div>
+
+        <div class="signal__hud-bottom">
+          <div class="signal__strength">
+            <div class="signal__strength-label">Signal Strength</div>
+            <div class="signal__strength-bar">
+              <div class="signal__strength-segment"></div>
+              <div class="signal__strength-segment"></div>
+              <div class="signal__strength-segment"></div>
+              <div class="signal__strength-segment"></div>
+              <div class="signal__strength-segment"></div>
+              <div class="signal__strength-segment"></div>
+              <div class="signal__strength-segment"></div>
+              <div class="signal__strength-segment"></div>
+              <div class="signal__strength-segment"></div>
+              <div class="signal__strength-segment"></div>
+            </div>
+          </div>
+          <div class="signal__coords">
+            47.6062° N<br>
+            122.3321° W<br>
+            <span style="color: var(--teal-glow);">TRACKING</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       MOMENT 3: THE MEMORY
+       "What We Left Behind"
+       ═══════════════════════════════════════════ -->
+  <div id="moment-memory" class="moment">
+    <div class="memory__container">
+
+      <div class="memory__intro" id="memory-intro">
+        <div class="memory__intro-label">Moment III — The Memory</div>
+        <div class="memory__intro-text">What we left behind tells the story we couldn't.</div>
+      </div>
+
+      <!-- Remnant 01: The Wall -->
+      <div class="remnant" id="remnant-1">
+        <div class="remnant__frame">
+          <div class="remnant__number">Remnant 01 — Found at Grid Reference 4A-7</div>
+          <div class="remnant__wall">
+            <div class="remnant__graffiti">"WE WERE HERE. DAY 4. HEADING NORTH."</div>
+            <div class="remnant__graffiti-reply">Scratched below in different handwriting: "No one came."</div>
+            <span class="remnant__hidden-text">47.6062 — 122.3321</span>
+          </div>
+          <div class="remnant__description">
+            A concrete wall at the highway interchange. Wildflowers grow through the cracks now.
+            Someone left these words expecting rescue. Someone else came later and left the truth.
+          </div>
+        </div>
+      </div>
+
+      <!-- Remnant 02: The Screen -->
+      <div class="remnant" id="remnant-2">
+        <div class="remnant__frame">
+          <div class="remnant__number">Remnant 02 — Recovered device, residential block</div>
+          <div class="remnant__screen">
+            <div class="remnant__message remnant__message--sent">
+              Are you coming home?
+              <div class="remnant__message--time">Day 1 — 18:42 — Delivered</div>
+            </div>
+            <div class="remnant__message remnant__message--sent" style="margin-top: 1rem;">
+              Please answer
+              <div class="remnant__message--time">Day 1 — 23:17 — Delivered</div>
+            </div>
+            <div class="remnant__message remnant__message--noreply">
+              No further messages. Battery depleted Day 3.
+            </div>
+          </div>
+          <div class="remnant__description">
+            The screen was still on when we found it. Cracked. Glowing faintly in an empty room.
+            The battery lasted longer than the person waiting.
+          </div>
+        </div>
+      </div>
+
+      <!-- Remnant 03: The Map -->
+      <div class="remnant" id="remnant-3">
+        <div class="remnant__frame">
+          <div class="remnant__number">Remnant 03 — Operations board, field station</div>
+          <div class="remnant__map-board">
+            <div class="remnant__map-detail">
+              <span class="crossed">ROUTE ALPHA — HIGHWAY 101 SOUTH — BLOCKED DAY 12</span><br>
+              <span class="crossed">ROUTE BETA — MOUNTAIN PASS — COLLAPSED DAY 34</span><br>
+              <span class="crossed">ROUTE GAMMA — COASTAL ROAD — FLOODED DAY 89</span><br>
+              <span class="crossed">ROUTE DELTA — RAIL TUNNEL — SEALED DAY 156</span><br>
+              <br>
+              <span class="active">★ SIGNAL ORIGIN — 47.6062°N, 122.3321°W — UNVERIFIED</span><br>
+              <span class="active" style="font-size: 0.65rem; margin-top: 0.5rem; display: block;">
+                Note: This is the only location still transmitting. No team has returned from verification.
+              </span>
+            </div>
+          </div>
+          <div class="remnant__description">
+            Every route was tried. Every route was closed. Only the signal remained — 
+            a point on a map that no one could reach, but no one could ignore.
+          </div>
+        </div>
+      </div>
+
+      <!-- Remnant 04: The Drawing -->
+      <div class="remnant" id="remnant-4">
+        <div class="remnant__frame">
+          <div class="remnant__number">Remnant 04 — Children's shelter, Building 7</div>
+          <div class="remnant__drawing">
+            <img src="/images/child-drawing.png" alt="A child's crayon drawing of a family with the word HOME written below" class="remnant__image" loading="lazy" />
+          </div>
+          <div class="remnant__description">
+            Found pinned to the wall of an empty dormitory. Thirty-two cots. All made. All empty.
+            This was the only personal item left behind. Someone small wanted to remember what home looked like.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       MOMENT 4: THE EXPLORATION
+       "Go Deeper"
+       ═══════════════════════════════════════════ -->
+  <div id="moment-explore" class="moment">
+    <div class="explore__station" id="explore-station">
+
+      <!-- LEFT: Map Console -->
+      <div class="explore__panel explore__map">
+        <div class="explore__panel-header">
+          <span>Map Console</span>
+          <div class="status-dot"></div>
+        </div>
+
+        <div class="explore__zone active" data-zone="city" id="zone-city">
+          <div class="explore__zone-number">Zone 01</div>
+          <div class="explore__zone-name">The Overgrown City</div>
+          <div class="explore__zone-threat">Population: <span class="high">0</span> — Threat: <span class="med">Moderate</span></div>
+        </div>
+
+        <div class="explore__zone" data-zone="tower" id="zone-tower">
+          <div class="explore__zone-number">Zone 02</div>
+          <div class="explore__zone-name">The Signal Tower</div>
+          <div class="explore__zone-threat">Status: <span class="high">Unknown</span> — Threat: <span class="high">High</span></div>
+        </div>
+
+        <div class="explore__zone" data-zone="archive" id="zone-archive">
+          <div class="explore__zone-number">Zone 03</div>
+          <div class="explore__zone-name">The Buried Archive</div>
+          <div class="explore__zone-threat">Access: <span class="med">Restricted</span> — Power: <span class="low">Active</span></div>
+        </div>
+
+        <div class="explore__zone" data-zone="coast" id="zone-coast">
+          <div class="explore__zone-number">Zone 04</div>
+          <div class="explore__zone-name">The Coastal Ruin</div>
+          <div class="explore__zone-threat">Occupied: <span class="high">No</span> — Light: <span class="low">Active</span></div>
+        </div>
+      </div>
+
+      <!-- CENTER: Data Terminal -->
+      <div class="explore__panel explore__terminal">
+        <div class="explore__panel-header">
+          <span>Data Terminal</span>
+          <div class="status-dot"></div>
+        </div>
+        <div class="explore__terminal-content" id="terminal-content">
+
+          <!-- Zone previews -->
+          <div class="explore__zone-preview active" id="preview-city">
+            <img src="/images/zone-city.png" alt="The Overgrown City" class="explore__zone-image" loading="lazy" />
+            <div class="explore__zone-title">The Overgrown City</div>
+            <div class="explore__zone-desc">
+              Where 8 million people vanished in a single day. The buildings still stand — but the trees own every floor above the third. 
+              Root systems have cracked foundations. Vines hold the glass towers together now. 
+              Birds nest where boardrooms used to be. Nature didn't destroy the city. It inherited it.
+            </div>
+          </div>
+
+          <div class="explore__zone-preview" id="preview-tower">
+            <img src="/images/zone-tower.png" alt="The Signal Tower" class="explore__zone-image" loading="lazy" />
+            <div class="explore__zone-title">The Signal Tower</div>
+            <div class="explore__zone-desc">
+              The only structure still transmitting. Frequency 7.83 Hz — Earth's natural resonance, amplified. 
+              No one knows who maintains it. No one's been close enough to find out. 
+              Three teams were sent. None returned. The signal continues regardless.
+            </div>
+          </div>
+
+          <div class="explore__zone-preview" id="preview-archive">
+            <img src="/images/zone-archive.png" alt="The Buried Archive" class="explore__zone-image" loading="lazy" />
+            <div class="explore__zone-title">The Buried Archive</div>
+            <div class="explore__zone-desc">
+              200 meters underground. Sealed since Day 1 by automated protocols. 
+              Contains every digital record of the world before — every photo, every message, every song. 
+              The generators still run. The servers still hum. All of human memory, preserved in darkness, 
+              waiting for someone with clearance that no longer exists.
+            </div>
+          </div>
+
+          <div class="explore__zone-preview" id="preview-coast">
+            <img src="/images/zone-coast.png" alt="The Coastal Ruin" class="explore__zone-image" loading="lazy" />
+            <div class="explore__zone-title">The Coastal Ruin</div>
+            <div class="explore__zone-desc">
+              A lighthouse on the edge of the continent. Someone maintained it alone for 2,000 days. 
+              The logbook shows daily entries — weather, wave height, ship sightings (always zero). 
+              On Day 2,001, the entries stop. The lamp still burns. 
+              We don't know if they left or if the ocean finally came for them.
+            </div>
+          </div>
+
+          <!-- Intercepted files -->
+          <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.03);">
+            <div style="font-size: 0.6rem; color: var(--text-dim); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.8rem;">
+              Intercepted Files
+            </div>
+            <div class="explore__file">LOG_0847.dat — Frequency anomaly report</div>
+            <div class="explore__file">LOG_1203.dat — Weather pattern deviation</div>
+            <div class="explore__file">LOG_2102.dat — Unidentified broadcast fragment</div>
+            <div class="explore__file explore__file--corrupted" id="corrupted-file">
+              ▓▓▓_CLASSIFIED.enc — [CORRUPTED] — CLICK TO DECRYPT
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Personal Log -->
+      <div class="explore__panel explore__log">
+        <div class="explore__panel-header">
+          <span>Operator Log</span>
+          <div class="status-dot"></div>
+        </div>
+
+        <div class="explore__log-entry">
+          <div class="explore__log-date">Day 1</div>
+          <div class="explore__log-text">
+            "All channels went dead at 14:07. Not static — silence. 
+            Like the world held its breath and forgot to exhale."
+          </div>
+        </div>
+
+        <div class="explore__log-entry">
+          <div class="explore__log-date">Day 47</div>
+          <div class="explore__log-text">
+            "Stopped counting the stations I've tried. 
+            The equipment works. The frequencies work. There's just... no one there."
+          </div>
+        </div>
+
+        <div class="explore__log-entry">
+          <div class="explore__log-date">Day 389</div>
+          <div class="explore__log-text">
+            "I talk to the microphone sometimes. Not because I think anyone hears. 
+            Because I need to remember what my voice sounds like."
+          </div>
+        </div>
+
+        <div class="explore__log-entry">
+          <div class="explore__log-date">Day 1,204</div>
+          <div class="explore__log-text">
+            "The deer came back to the valley today. A whole herd. 
+            They walked right through what used to be the parking lot. 
+            Beautiful. Heartbreaking. Both at the same time."
+          </div>
+        </div>
+
+        <div class="explore__log-entry">
+          <div class="explore__log-date">Day 2,847 — Today</div>
+          <div class="explore__log-text">
+            "A signal. A real signal. After all this time. 
+            My hands are shaking. I can barely type. 
+            Someone is out there. Or something is. 
+            Either way — the silence is over."
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       MOMENT 5: THE DISCOVERY (Hidden Overlay)
+       ═══════════════════════════════════════════ -->
+  <div id="discovery-overlay">
+    <div class="discovery__container">
+      <div class="discovery__header">
+        CLASSIFIED — UNAUTHORIZED ACCESS DETECTED
+      </div>
+
+      <div class="discovery__entry" id="discovery-1">
+        <em>LOG FRAGMENT — UNKNOWN AUTHOR — PRE-SILENCE</em><br><br>
+        "...they think the signal is natural. A geological anomaly. 
+        Resonance from tectonic shifts. They're wrong. 
+        I built it. Every frequency. Every pulse. Every pattern."
+      </div>
+
+      <div class="discovery__entry" id="discovery-2">
+        "...if you're reading this, you found my frequency. 
+        You followed the pattern I left in the static. 
+        That means you're either very smart or very desperate. 
+        Either way — you're exactly who I need."
+      </div>
+
+      <div class="discovery__entry" id="discovery-3">
+        "...I'm sorry for what I had to do. The silence was the only way 
+        to make them listen. When everything is noise, no one hears anything. 
+        I had to make them hear nothing — so that when one signal returned, 
+        it would mean everything."
+      </div>
+
+      <div class="discovery__entry" id="discovery-4">
+        <em>FINAL ENTRY</em><br><br>
+        "The signal you followed is not a distress call. 
+        It's a test. If you found it, you're the one. 
+        Come to the tower. Bring this frequency. 
+        The world doesn't need saving. It needs remembering."
+      </div>
+
+      <button class="discovery__close" id="discovery-close">[ Return to Station ]</button>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       MOMENT 6: THE RECKONING
+       "Answer or Abandon"
+       ═══════════════════════════════════════════ -->
+  <div id="moment-reckoning" class="moment">
+    <div class="reckoning__container" id="reckoning-container">
+
+      <div class="reckoning__incoming">
+        Incoming Transmission — Final
+      </div>
+
+      <div class="reckoning__transmission">
+        <div class="reckoning__transmission-text">
+"I've been calling for 2,847 days.
+You're the first to hear.
+I can't hold this frequency much longer.
+
+If you're real — answer.
+Send your name. Your coordinates. Anything.
+Let me know the silence wasn't permanent.
+
+Please."</div>
+      </div>
+
+      <form class="reckoning__form" id="reckoning-form">
+        <div class="reckoning__field">
+          <label class="reckoning__field-label" for="field-callsign">Callsign:</label>
+          <input type="text" id="field-callsign" class="reckoning__field-input" placeholder="Your name..." autocomplete="name" />
+        </div>
+        <div class="reckoning__field">
+          <label class="reckoning__field-label" for="field-frequency">Frequency:</label>
+          <input type="email" id="field-frequency" class="reckoning__field-input" placeholder="Your email..." autocomplete="email" />
+        </div>
+        <div class="reckoning__field">
+          <label class="reckoning__field-label" for="field-message">Transmission:</label>
+          <textarea id="field-message" class="reckoning__field-textarea" placeholder="What do you want to say to a world that forgot you?"></textarea>
+        </div>
+        <button type="submit" class="reckoning__submit" id="transmit-btn">[ Transmit Signal ]</button>
+      </form>
+
+      <div class="reckoning__sequence" id="reckoning-sequence">
+        <div class="reckoning__sequence-line" id="seq-1">&gt; ENCODING TRANSMISSION...</div>
+        <div class="reckoning__sequence-line" id="seq-2">&gt; AMPLIFYING FREQUENCY TO 7.83 Hz...</div>
+        <div class="reckoning__sequence-line" id="seq-3">&gt; TRANSMITTING...</div>
+        <div class="reckoning__sequence-line" id="seq-4">&gt; ...</div>
+        <div class="reckoning__sequence-line" id="seq-5">&gt; SIGNAL SENT.</div>
+        <div class="reckoning__sequence-line" id="seq-6">&gt; ...</div>
+        <div class="reckoning__sequence-line reckoning__sequence-line--success" id="seq-7">&gt; RECEIVED.</div>
+        <div class="reckoning__sequence-line reckoning__sequence-line--highlight" id="seq-8">&gt; CONNECTION ESTABLISHED. THE SILENCE IS OVER.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       MOMENT 7: THE ECHO
+       "After you leave"
+       ═══════════════════════════════════════════ -->
+  <div id="moment-echo" class="moment">
+    <div class="echo__quote" id="echo-quote">
+      "The world didn't end.<br>It was waiting for you to find it."
+    </div>
+
+    <div class="echo__status" id="echo-status">
+      Signal Log: <span>1 Received</span><br>
+      Frequency: <span>Stable</span><br>
+      Status: <span>Connected</span><br>
+      <br>
+      47.6062° N, 122.3321° W<br>
+      Day 2,847 — The silence is over.
+    </div>
+
+    <div class="echo__end" id="echo-end">
+      — End of transmission —
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
